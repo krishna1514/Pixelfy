@@ -5,22 +5,44 @@ import jwt from "jsonwebtoken";
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    // Validate input
     if (!name || !email || !password) {
       return res.json({ success: false, message: "Missing Details" });
     }
+
+    // Check if user already exists (optional but useful for debugging)
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      console.log("⚠️ User already exists with email:", email);
+      return res.json({ success: false, message: "User already exists" });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
     const userData = {
       name: name,
       email: email,
       password: hashedPassword,
     };
+
     const newUser = new userModel(userData);
     const user = await newUser.save();
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ success: true, token: token, user: { name: user.name } });
+
+    console.log("✅ Token generated successfully");
+
+    res.json({
+      success: true,
+      token: token,
+      user: { name: user.name, email: user.email },
+    });
+
+    console.log("🎉 User registration successful for:", email);
   } catch (error) {
-    console.log(error);
+    console.error("❌ [registerUser] Error occurred:", error);
     res.json({ success: false, message: error.message });
   }
 };

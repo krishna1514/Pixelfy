@@ -27,7 +27,7 @@ const Login = () => {
           setUser(data.user);
           localStorage.setItem("token", data.token);
           setShowLogin(false);
-        } else {  
+        } else {
           toast.error(data.message);
         }
       } else {
@@ -37,7 +37,7 @@ const Login = () => {
           password,
         });
         if (data.success) {
-          console.log("Ok")
+          console.log("Ok");
           setToken(data.token);
           setUser(data.user);
           localStorage.setItem("token", data.token);
@@ -107,10 +107,10 @@ const Login = () => {
             required
           />
         </div>
-        <p className="text-sm text-blue-600 my-4 cursor-pointer">
+        <p className="text-sm text-violet-700 my-4 cursor-pointer">
           Forgot password?
         </p>
-        <button className="bg-blue-600 w-full text-white py-2 rounded-full">
+        <button className="bg-violet-600 w-full text-white py-2 rounded-full">
           {state === "Login" ? "Login" : "Create Account"}
         </button>
         {state === "Login" ? (
@@ -118,7 +118,7 @@ const Login = () => {
             Don't have an account?{" "}
             <span
               onClick={() => setState("Sign Up")}
-              className="text-blue-600 cursor-pointer"
+              className="text-violet-700 cursor-pointer"
             >
               Sign up
             </span>
@@ -128,7 +128,7 @@ const Login = () => {
             Already have an account?{" "}
             <span
               onClick={() => setState("Login")}
-              className="text-blue-600 cursor-pointer"
+              className="text-violet-700 cursor-pointer"
             >
               Login
             </span>

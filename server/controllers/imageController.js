@@ -6,11 +6,21 @@ const generateImage = async (req, res) => {
   try {
     const { userId, prompt } = req.body;
 
-    const user = await userModel.findById(userId);
-    if (!user || !prompt) {
+    // Check if request body has necessary info
+    if (!userId || !prompt) {
       return res.json({ success: false, message: "Missing details." });
     }
-    if (user.creditBalance === 0 || userModel.creditBalance < 0) {
+
+    const user = await userModel.findById(userId);
+    console.log("✅ User found:", user ? user._id : "No user found");
+
+    if (!user) {
+      console.log("User not found");
+      return res.json({ success: false, message: "User not found." });
+    }
+
+    if (user.creditBalance <= 0) {
+      console.log("No credit balance:", user.creditBalance);
       return res.json({
         success: false,
         message: "No credit balance",
@@ -46,7 +56,6 @@ const generateImage = async (req, res) => {
       resultImage,
     });
   } catch (error) {
-    console.log(error);
     res.json({ success: false, message: error.message });
   }
 };

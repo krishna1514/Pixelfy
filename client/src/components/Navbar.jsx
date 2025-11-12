@@ -17,7 +17,7 @@ const Navbar = () => {
         {user ? (
           <div className="flex items-center justify-center text-center gap-2 sm:gap-3">
             <button
-              className="flex items-center gap-2 bg-blue-100 px-4 sm:px-6 py-1.5 sm:py-3 rounded-full hover:scale-105 transition"
+              className="flex items-center gap-2 bg-violet-200 px-4 sm:px-6 py-1.5 sm:py-3 rounded-full hover:scale-105 transition"
               onClick={() => navigate("/buy")}
             >
               <img src={assets.credit_star} className="w-5" />
@@ -30,7 +30,12 @@ const Navbar = () => {
               <img src={assets.profile_icon} className="w-10 drop-shadow" />
               <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
                 <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
-                  <li onClick={logout} className="px-2 py-1 cursor-pointer pr-10">Logout</li>
+                  <li
+                    onClick={logout}
+                    className="px-2 py-1 cursor-pointer pr-10"
+                  >
+                    Logout
+                  </li>
                 </ul>
               </div>
             </div>

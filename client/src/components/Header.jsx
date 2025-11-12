@@ -1,21 +1,20 @@
 import React, { useContext } from "react";
-import { assets } from "../assets/assets";
+import { headerImages, assets } from "../assets/assets";
 import { motion } from "motion/react";
 import { delay } from "motion";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const navigate = useNavigate()
-  const {user, setShowLogin} = useContext(AppContext)
+  const navigate = useNavigate();
+  const { user, setShowLogin } = useContext(AppContext);
   const handleClick = () => {
     if (user) {
-      navigate('/result')
+      navigate("/result");
+    } else {
+      setShowLogin(true);
     }
-    else {
-      setShowLogin(true)
-    }
-  }
+  };
   return (
     <motion.div
       className="flex flex-col justify-center items-center text-center my-20"
@@ -39,7 +38,7 @@ const Header = () => {
         transition={{ delay: 0.4, duration: 2 }}
         className="text-4xl max-w-[300px] sm:text-7xl sm:max-w-[590px] mx-auto mt-10 text-center"
       >
-        Turn text to <span className="text-blue-600">image</span>, in seconds.
+        Turn text to <span className="text-violet-700">image</span>, in seconds.
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -71,20 +70,16 @@ const Header = () => {
         transition={{ delay: 1, duration: 1 }}
         className="flex flex-wrap justify-center mt-16 gap-3"
       >
-        {Array(6)
-          .fill("")
-          .map((item, index) => {
-            return (
-              <motion.img
-                className="rounded hover:scale-105 transition-all duration-300 cursor-pointer max-sm:w-10"
-                src={
-                  index % 2 === 0 ? assets.sample_img_2 : assets.sample_img_1
-                }
-                key={index}
-                width={70}
-              />
-            );
-          })}
+        {headerImages.map((item, index) => {
+          return (
+            <motion.img
+              className="rounded hover:scale-105 transition-all duration-300 cursor-pointer max-sm:w-10"
+              src={item}
+              key={index}
+              width={70}
+            />
+          );
+        })}
       </motion.div>
       <motion.p
         initial={{ opacity: 0 }}
@@ -92,7 +87,7 @@ const Header = () => {
         transition={{ delay: 1.2, duration: 0.8 }}
         className="mt-2 text-neutral-600"
       >
-        Generated images from Imagify
+        Generated images from Pixelfy
       </motion.p>
     </motion.div>
   );
