@@ -91,7 +91,7 @@ const Result = () => {
           <img
             className={`max-w-sm rounded mx-auto transition-all mb-5 duration-500 ${selectedFilter}`}
             src={image}
-            alt="Generated result"
+            alt=""
           />
           {/* === Image Filter Buttons === */}
           {isImageLoaded && (
