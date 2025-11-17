@@ -98,7 +98,7 @@ const BuyCredit = () => {
 
       const res = await fetch(backendUrl + "/api/payment/verify-payment", {
         method: "POST",
-        headers: { token },
+        headers: { "Content-Type": "application/json", token },
         body: JSON.stringify({
           razorpay_order_id: paymentResponse.razorpay_order_id,
           razorpay_payment_id: paymentResponse.razorpay_payment_id,
