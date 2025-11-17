@@ -19,7 +19,7 @@ paymentRouter.post("/create-order", userAuth, async (req, res) => {
     const { amount, planId, credits } = req.body;
 
     const options = {
-      amount: amount, // amount in paise
+      amount: amount,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {

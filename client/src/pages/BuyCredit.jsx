@@ -34,7 +34,7 @@ const BuyCredit = () => {
       // Step 1: Create Razorpay order
       const res = await fetch(backendUrl + "/api/payment/create-order", {
         method: "POST",
-        headers: { token },
+        headers: { "Content-Type": "application/json", token },
         body: JSON.stringify({
           amount: plan.price * 100,
           planId: plan.id,
