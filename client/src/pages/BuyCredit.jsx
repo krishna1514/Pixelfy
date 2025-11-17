@@ -14,6 +14,20 @@ const BuyCredit = () => {
       return;
     }
 
+    // Check if Razorpay key exists
+    if (!razorPayId) {
+      alert("Payment configuration error. Please contact support.");
+      console.error("Razorpay Key ID is missing");
+      return;
+    }
+
+    // Check if Razorpay script is loaded
+    if (!window.Razorpay) {
+      alert("Payment system not loaded. Please refresh the page.");
+      console.error("Razorpay script not loaded");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -31,8 +45,10 @@ const BuyCredit = () => {
       const orderData = await res.json();
 
       if (!orderData.success) {
-        throw new Error("Failed to create order");
+        throw new Error(orderData.message || "Failed to create order");
       }
+
+      console.log("Order created:", orderData.order);
 
       // Step 2: Open Razorpay checkout
       const options = {
@@ -47,8 +63,8 @@ const BuyCredit = () => {
           await verifyPayment(response, plan.credits);
         },
         prefill: {
-          name: user.name,
-          email: user.email,
+          name: user.name || "",
+          email: user.email || "",
         },
         theme: { color: "#3399cc" },
         modal: {
@@ -58,14 +74,17 @@ const BuyCredit = () => {
         },
       };
 
+      console.log("Opening Razorpay with options:", { ...options, key: "***" });
+
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", function (response) {
+        console.error("Payment failed:", response.error);
         alert("Payment Failed: " + response.error.description);
         setLoading(false);
       });
       rzp.open();
     } catch (error) {
-      console.error(error);
+      console.error("Payment initiation error:", error);
       alert("Failed to initiate payment. Please try again.");
       setLoading(false);
     }
