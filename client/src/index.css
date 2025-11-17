@@ -12,31 +12,36 @@
   font-weight: 300;
 }
 
-/* === Image Filters === */
+/* Base variable for preset filters */
+:root {
+  --extra-filter: none;
+}
+
+/* Preset Filters */
 .filter-none {
-  filter: none;
+  --extra-filter: none;
 }
 
 .filter-grayscale {
-  filter: grayscale(100%);
+  --extra-filter: grayscale(100%);
 }
 
 .filter-sepia {
-  filter: sepia(80%);
+  --extra-filter: sepia(100%);
 }
 
 .filter-contrast {
-  filter: contrast(1.3) brightness(1.1);
+  --extra-filter: contrast(140%);
 }
 
 .filter-warm {
-  filter: brightness(1.1) contrast(1.2) saturate(1.3) hue-rotate(10deg);
+  --extra-filter: brightness(1.1) sepia(20%) saturate(120%);
 }
 
 .filter-cool {
-  filter: brightness(0.95) saturate(1.3) hue-rotate(-20deg);
+  --extra-filter: brightness(0.95) saturate(80%) hue-rotate(200deg);
 }
 
 .filter-vintage {
-  filter: sepia(0.5) contrast(1.1) brightness(0.9) saturate(0.8);
+  --extra-filter: sepia(40%) contrast(90%) brightness(90%) saturate(120%);
 }

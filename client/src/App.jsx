@@ -11,11 +11,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
 const App = () => {
-  const { showLogin } = useContext(AppContext);
+  const { showLogin, backendUrl } = useContext(AppContext);
 
   useEffect(() => {
-    // Ping backend to wake it up
-    fetch("https://your-backend.onrender.com/ping")
+    fetch(backendUrl + "/ping")
       .then(() => console.log("Backend pinged!"))
       .catch((err) => console.error("Ping failed", err));
   }, []);

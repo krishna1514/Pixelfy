@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import ImageEditor from "../components/ImageEditor";
+import { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { motion } from "motion/react";
 import { AppContext } from "../context/AppContext";
@@ -61,20 +62,35 @@ const Result = () => {
   };
 
   const downloadFilteredImage = () => {
-    const img = document.querySelector("img");
+    const img = document.getElementById("edited-image");
+    if (!img) return alert("Image not ready.");
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
+    const rotation = Number(img.dataset.rotation || 0);
+    const rad = (rotation * Math.PI) / 180;
+
+    // Swap width/height for 90°/270°
+    canvas.width = rotation % 180 === 0 ? img.naturalWidth : img.naturalHeight;
+    canvas.height = rotation % 180 === 0 ? img.naturalHeight : img.naturalWidth;
 
     ctx.filter = getComputedStyle(img).filter;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    const link = document.createElement("a");
-    link.download = "filtered-image.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    // Center and rotate
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(rad);
+
+    // Draw image centered
+    ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+
+    // Download
+    canvas.toBlob((blob) => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "edited-image.png";
+      link.click();
+    });
   };
 
   return (
@@ -88,36 +104,10 @@ const Result = () => {
     >
       <div>
         <div className="relative">
-          <img
-            className={`max-w-sm rounded mx-auto transition-all mb-5 duration-500 ${selectedFilter}`}
-            src={image}
-            alt=""
-          />
           {/* === Image Filter Buttons === */}
           {isImageLoaded && (
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {[
-                { name: "None", class: "filter-none" },
-                { name: "Grayscale", class: "filter-grayscale" },
-                { name: "Sepia", class: "filter-sepia" },
-                { name: "Contrast", class: "filter-contrast" },
-                { name: "Warm", class: "filter-warm" },
-                { name: "Cool", class: "filter-cool" },
-                { name: "Vintage", class: "filter-vintage" },
-              ].map((filter) => (
-                <button
-                  key={filter.class}
-                  type="button" // ✅ important: prevents form submission
-                  onClick={() => setSelectedFilter(filter.class)}
-                  className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                    selectedFilter === filter.class
-                      ? "bg-violet-500 text-white"
-                      : "bg-zinc-200 text-black hover:bg-zinc-300"
-                  }`}
-                >
-                  {filter.name}
-                </button>
-              ))}
+            <div className="w-full max-w-4xl mt-10">
+              <ImageEditor image={image} />
             </div>
           )}
 
