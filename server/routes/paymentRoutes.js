@@ -1,7 +1,8 @@
 import express from "express";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import userModel from "../models/userModel.js"; // Adjust path as needed
+import userModel from "../models/userModel.js";
+import userAuth from "../middlewares/auth.js";
 
 const paymentRouter = express.Router();
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -13,7 +14,7 @@ const razorpay = new Razorpay({
 });
 
 // Create Razorpay order
-paymentRouter.post("/create-order", async (req, res) => {
+paymentRouter.post("/create-order", userAuth, async (req, res) => {
   try {
     const { amount, planId, credits } = req.body;
 
@@ -52,12 +53,31 @@ paymentRouter.post("/verify-payment", async (req, res) => {
       credits,
     } = req.body;
 
+    console.log("Verification request received:");
+    console.log("Order ID:", razorpay_order_id);
+    console.log("Payment ID:", razorpay_payment_id);
+    console.log("Signature:", razorpay_signature);
+    console.log("User ID:", userId);
+    console.log("Credits:", credits);
+
+    // Check if all required fields are present
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment details",
+      });
+    }
+
     // Verify signature
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", RAZORPAY_KEY_SECRET)
       .update(sign.toString())
       .digest("hex");
+
+    console.log("Expected signature:", expectedSign);
+    console.log("Received signature:", razorpay_signature);
+    console.log("Signatures match:", razorpay_signature === expectedSign);
 
     if (razorpay_signature === expectedSign) {
       // Payment is verified, update user credits
@@ -74,22 +94,28 @@ paymentRouter.post("/verify-payment", async (req, res) => {
         });
       }
 
+      console.log(
+        "Credits updated successfully. New balance:",
+        user.creditBalance
+      );
+
       res.json({
         success: true,
         message: "Payment verified and credits updated successfully",
         creditBalance: user.creditBalance,
       });
     } else {
+      console.error("Signature mismatch!");
       res.status(400).json({
         success: false,
-        message: "Invalid signature",
+        message: "Invalid signature - payment verification failed",
       });
     }
   } catch (error) {
     console.error("Payment verification error:", error);
     res.status(500).json({
       success: false,
-      message: "Payment verification failed",
+      message: "Payment verification failed: " + error.message,
     });
   }
 });

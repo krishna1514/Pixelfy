@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppContext";
 import { motion } from "motion/react";
 
 const BuyCredit = () => {
-  const { user, setShowLogin, backendUrl, razorPayId, loadCreditsData } =
+  const { user, setShowLogin, backendUrl, razorPayId, loadCreditsData, token } =
     useContext(AppContext);
   const [loading, setLoading] = useState(false);
 
@@ -92,9 +92,13 @@ const BuyCredit = () => {
 
   const verifyPayment = async (paymentResponse, credits) => {
     try {
+      console.log("Verifying payment with response:", paymentResponse);
+      console.log("User ID:", user._id);
+      console.log("Credits to add:", credits);
+
       const res = await fetch(backendUrl + "/api/payment/verify-payment", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { token },
         body: JSON.stringify({
           razorpay_order_id: paymentResponse.razorpay_order_id,
           razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -105,6 +109,7 @@ const BuyCredit = () => {
       });
 
       const data = await res.json();
+      console.log("Verification response:", data);
 
       if (data.success) {
         alert(`Payment Successful! ${credits} credits added to your account.`);
@@ -113,11 +118,17 @@ const BuyCredit = () => {
           await loadCreditsData();
         }
       } else {
-        alert("Payment verification failed. Please contact support.");
+        console.error("Verification failed:", data.message);
+        alert(
+          `Payment verification failed: ${data.message}. Please contact support.`
+        );
       }
     } catch (error) {
       console.error("Verification error:", error);
-      alert("Failed to verify payment. Please contact support.");
+      alert(
+        "Failed to verify payment. Please contact support with your payment ID: " +
+          paymentResponse.razorpay_payment_id
+      );
     } finally {
       setLoading(false);
     }
