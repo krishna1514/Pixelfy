@@ -43,7 +43,7 @@ paymentRouter.post("/create-order", userAuth, async (req, res) => {
 });
 
 // Verify payment and update credits
-paymentRouter.post("/verify-payment", async (req, res) => {
+paymentRouter.post("/verify-payment", userAuth, async (req, res) => {
   try {
     const {
       razorpay_order_id,
