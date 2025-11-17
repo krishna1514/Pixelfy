@@ -14,6 +14,7 @@ const AppContextProvider = (props) => {
   const [input, setInput] = useState("");
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const razorPayId = import.meta.env.RAZORPAY_KEY_ID;
   const navigate = useNavigate();
 
   const loadCreditsData = async () => {
@@ -94,6 +95,7 @@ const AppContextProvider = (props) => {
     enhancing,
     setEnhancing,
     backendUrl,
+    razorPayId,
     token,
     setToken,
     credit,

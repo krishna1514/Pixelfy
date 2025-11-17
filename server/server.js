@@ -5,6 +5,7 @@ import connectDB from "./config/mongodb.js";
 import userRouter from "./routes/userRoutes.js";
 import imageRouter from "./routes/imageRoutes.js";
 import promptRouter from "./routes/promptRouter.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -16,6 +17,7 @@ await connectDB();
 app.use("/api/prompt", promptRouter);
 app.use("/api/user", userRouter);
 app.use("/api/image", imageRouter);
+app.use("/api/payment", paymentRouter);
 app.get("/", (req, res) => {
   return res.send("API WORKING");
 });
